@@ -84,6 +84,7 @@ public class FloorManager : MonoBehaviour
         else
         {
             playerMovement.disableMove = true;
+            yield return new WaitForSeconds(0.5f);
             transform.Translate(new Vector2(0, floorSpacing));
             currentFloorStats = (float[])floorStats[currentFloor];
             enemySpawner.spawnTimer = floorDelay;
@@ -107,7 +108,7 @@ public class FloorManager : MonoBehaviour
             beamsRemaining = (int)currentFloorStats[8];
             enemySpawner.currentFloorStats = currentFloorStats;
 
-            yield return new WaitForSeconds(floorDelay);
+            yield return new WaitForSeconds(floorDelay - 0.5f);
             playerMovement.disableMove = false;
         }
     }

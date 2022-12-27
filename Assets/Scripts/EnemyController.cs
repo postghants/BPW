@@ -90,7 +90,7 @@ public class EnemyController : MonoBehaviour
 
     void RetreatingBehaviour()
     {
-        if(transform.position.x >= xSpawnDistance + 0.3 || transform.position.y >= ySpawnDistance + 0.3 || transform.position.x <= -xSpawnDistance - 0.3 || transform.position.y <= -ySpawnDistance - 0.3)
+        if(transform.position.x >= xSpawnDistance || transform.position.y >= ySpawnDistance || transform.position.x <= -xSpawnDistance || transform.position.y <= -ySpawnDistance)
         {
             state = StateEnum.Still;
             return;

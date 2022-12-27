@@ -29,16 +29,26 @@ public class PlayerMovement : MonoBehaviour
     public InputMaster actions;
     public GameManager gameManager;
 
+    public SpriteRenderer spriteRenderer;
+    public SpriteRenderer bat;
+    public Transform batTransform;
+
     private InputAction Move;
     private InputAction Roll;
     private InputAction Fire;
 
     Vector2 move = new Vector2();
     private float fireRotation = 0f;
+    private Vector2 initialBatLocation;
+    public float initialBatRotation;
+    public Vector2 swungBatLocation;
+    public float swungBatRotation;
 
     private Vector2 rollStart = new Vector2();
     private Vector2 rollGoal = new Vector2();
     private Vector2 rollMove = new Vector2();
+    private bool LookLeft = false;
+    private bool LookRight = true;
 
     
 
@@ -55,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
 
         Fire.performed += OnFire;
         Roll.performed += OnRoll;
+
+        initialBatLocation = bat.gameObject.transform.localPosition;
     }
 
     private void OnEnable()
@@ -90,6 +102,22 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
         }
+        
+        if (look.position.x > transform.position.x + 0.2 && !LookRight)
+        {
+            spriteRenderer.flipX = false;
+            batTransform.localScale = Vector3.one;
+            LookRight = true;
+            LookLeft = false;
+        }
+        if (look.position.x < transform.position.x - 0.2 && !LookLeft)
+        {
+            spriteRenderer.flipX = true;
+            batTransform.localScale = new Vector3(-1f, 1f, 1f);
+            LookLeft = true;
+            LookRight = false;
+        }
+        
 
         if (isRolling)
         {
@@ -144,23 +172,31 @@ public class PlayerMovement : MonoBehaviour
         Vector2 lookRelative = look.position - transform.position;
         GameObject swing = (GameObject)PrefabUtility.InstantiatePrefab(projectile);
         Transform swingTrans = swing.transform;
+        bat.enabled = false;
 
 
         swingTrans.position = lookRelative.normalized * fireDistance + new Vector2(transform.position.x, transform.position.y);
         if(swingTrans.position.y < transform.position.y)
         {
-        fireRotation = -Vector2.Angle(new Vector2(1, 0), lookRelative);
+            fireRotation = -Vector2.Angle(new Vector2(1, 0), lookRelative);
         }
         else
         {
-             fireRotation = Vector2.Angle(new Vector2(1, 0), lookRelative);
+            fireRotation = Vector2.Angle(new Vector2(1, 0), lookRelative);
         }
         swingTrans.Rotate(new Vector3(0, 0, fireRotation));
         swingTrans.parent = transform;
 
         yield return new WaitForSeconds(fireLifetime);
         Destroy(swing);
+        bat.enabled = true;
+        bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, 0));
+        bat.gameObject.transform.localPosition = swungBatLocation;
+        bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, swungBatRotation * batTransform.localScale.x));
         yield return new WaitForSeconds(fireDelay);
         isFiring = false;
+        bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, 0));
+        bat.gameObject.transform.localPosition = initialBatLocation;
+        bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, initialBatRotation * batTransform.localScale.x));
     }
 }

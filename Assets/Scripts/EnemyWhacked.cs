@@ -6,36 +6,49 @@ public class EnemyWhacked : MonoBehaviour
 {
     public float speed;
     public float stunnedTime;
+    public float shakeMagnitude;
     public Color stunnedColor;
     public Color whackedColor;
     public Vector2 direction;
     public SpriteRenderer spriteRenderer;
 
+    private Vector2 initialPosition;
+    private float shakeTimer;
+    private float currentShakeMagnitude;
+
     private Vector2 move;
-    private bool stun;
 
     void OnEnable()
     {
-        stun = true;
+        initialPosition = transform.localPosition;
         StartCoroutine(Stunned());
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (!stun)
-        {
-            move = direction * speed;
-            move *= Time.deltaTime;
-            transform.Translate(move);
-        }
+            if (shakeTimer > 0)
+            {
+                transform.localPosition = initialPosition + Random.insideUnitCircle * currentShakeMagnitude;
+                shakeTimer -= Time.deltaTime;
+                currentShakeMagnitude -= shakeMagnitude / (stunnedTime / Time.deltaTime);
+            }
+            else
+            {
+                move = direction * speed;
+                move *= Time.deltaTime;
+                transform.Translate(move);
+            }
     }
     
     private IEnumerator Stunned()
     {
         spriteRenderer.color = stunnedColor;
+        shakeTimer = stunnedTime;
+        currentShakeMagnitude = shakeMagnitude;
         yield return new WaitForSeconds(stunnedTime);
+
+        transform.localPosition = initialPosition;
         spriteRenderer.color = whackedColor;
-        stun = false;
     }
 }
