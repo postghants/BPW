@@ -23,15 +23,26 @@ public class EnemyController : MonoBehaviour
     public float ySpawnDistance;
 
     public float fireTimer;
+    public SpriteRenderer sprite;
+    public SpriteRenderer gunSprite;
+    public Transform shadow;
+    public Color spawnColor;
+    public BoxCollider2D boxCollider;
     public Transform player;
     public EnemyWhacked enemyWhacked;
     public Object projectile;
 
     private Vector2 whackedDirection;
-    public enum StateEnum {Moving, Retreating, Still}
+    private float spawnTimer;
+    public enum StateEnum {Moving, Retreating, Still, Spawning}
     private StateEnum state;
 
-    
+    private void Start()
+    {
+        state = StateEnum.Spawning;
+        transform.Translate(0, 3, 0);
+        shadow.Translate(0, -3, 0);
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -71,6 +82,7 @@ public class EnemyController : MonoBehaviour
             case StateEnum.Moving: MovingBehaviour(); break;
             case StateEnum.Retreating: RetreatingBehaviour(); break;
             case StateEnum.Still: StillBehaviour(); break;
+            case StateEnum.Spawning: SpawningBehaviour(); break;
         }
     }
 
@@ -120,6 +132,23 @@ public class EnemyController : MonoBehaviour
         {
             state = StateEnum.Retreating;
         }
+    }
+
+    void SpawningBehaviour()
+    {
+        spawnColor.a += 0.05f;
+        sprite.color = spawnColor;
+        gunSprite.color = spawnColor;
+        transform.Translate(0, -0.15f, 0);
+        shadow.Translate(0, 0.15f, 0);
+        spawnTimer += 0.15f;
+        if (spawnTimer >= 3)
+        {
+            boxCollider.enabled = true;
+            state = StateEnum.Still;
+        }
+
+
     }
 
     void Fire()

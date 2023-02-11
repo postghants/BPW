@@ -13,8 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public float rollDist = 20;
     public float rollDelay = 10;
     public float rollTime = 0.7f;
-    public float fireDelay = 0.4f;
-    public float fireLifetime = 0.2f;
+    public float fireDelay = 0.5f;
+    public float fireLifetime = 0.1f;
     public float fireDistance = 1f;
 
     public float xFallDistance;
@@ -33,6 +33,12 @@ public class PlayerMovement : MonoBehaviour
     public SpriteRenderer bat;
     public Transform batTransform;
 
+    public ParticleSystem powerUpParticles;
+    public float powerUpTimer = 5;
+    public float powerUpSpeed = 1.2f;
+    public float powerUpFireDelay = 0.5f;
+    public Color powerUpColor;
+
     private InputAction Move;
     private InputAction Roll;
     private InputAction Fire;
@@ -43,6 +49,10 @@ public class PlayerMovement : MonoBehaviour
     public float initialBatRotation;
     public Vector2 swungBatLocation;
     public float swungBatRotation;
+    public Vector2 rechargeBatLocation;
+    public float rechargeBatRotation;
+    public float fireAnimationTime;
+
 
     private Vector2 rollStart = new Vector2();
     private Vector2 rollGoal = new Vector2();
@@ -107,6 +117,7 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = false;
             batTransform.localScale = Vector3.one;
+            bat.sortingOrder = 2;
             LookRight = true;
             LookLeft = false;
         }
@@ -114,6 +125,7 @@ public class PlayerMovement : MonoBehaviour
         {
             spriteRenderer.flipX = true;
             batTransform.localScale = new Vector3(-1f, 1f, 1f);
+            bat.sortingOrder = 0;
             LookLeft = true;
             LookRight = false;
         }
@@ -134,6 +146,25 @@ public class PlayerMovement : MonoBehaviour
             gameManager.EndGame();
             Destroy(other.gameObject);
         }
+        if (other.gameObject.CompareTag("Power-Up"))
+        {
+            StartCoroutine(PowerUp());
+            Destroy(other.gameObject);
+        }
+    }
+
+    private IEnumerator PowerUp()
+    {
+        powerUpParticles.Play();
+        spriteRenderer.color = powerUpColor;
+        fireDelay *= powerUpFireDelay;
+        fireAnimationTime *= powerUpFireDelay;
+        speed *= powerUpSpeed;
+        yield return new WaitForSeconds(powerUpTimer);
+        spriteRenderer.color = Color.white;
+        fireDelay /= powerUpFireDelay;
+        fireAnimationTime /= powerUpFireDelay;
+        speed /= powerUpSpeed;
     }
 
     private void OnRoll(InputAction.CallbackContext context)
@@ -190,10 +221,16 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(fireLifetime);
         Destroy(swing);
         bat.enabled = true;
+        bat.sortingOrder = 0;
         bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, 0));
         bat.gameObject.transform.localPosition = swungBatLocation;
         bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, swungBatRotation * batTransform.localScale.x));
-        yield return new WaitForSeconds(fireDelay);
+        yield return new WaitForSeconds(fireAnimationTime);
+        bat.sortingOrder = 2;
+        bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, 0));
+        bat.gameObject.transform.localPosition = rechargeBatLocation;
+        bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, rechargeBatRotation * batTransform.localScale.x));
+        yield return new WaitForSeconds(fireDelay - fireAnimationTime);
         isFiring = false;
         bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, 0));
         bat.gameObject.transform.localPosition = initialBatLocation;

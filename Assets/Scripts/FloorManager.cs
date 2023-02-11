@@ -105,7 +105,7 @@ public class FloorManager : MonoBehaviour
 
             floors[currentFloor + 1].gameObject.SetActive(false);
 
-            beamsRemaining = (int)currentFloorStats[8];
+            beamsRemaining = (int)currentFloorStats[10];
             enemySpawner.currentFloorStats = currentFloorStats;
 
             yield return new WaitForSeconds(floorDelay - 0.5f);
