@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public bool disableMove = false;
 
     public Transform look;
-    public Object projectile;
+    public GameObject projectile;
     public InputMaster actions;
     public GameManager gameManager;
 
@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     public float powerUpSpeed = 1.2f;
     public float powerUpFireDelay = 0.5f;
     public Color powerUpColor;
+    private bool poweredUp = false;
 
     private InputAction Move;
     private InputAction Roll;
@@ -143,8 +144,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if ((other.gameObject.CompareTag("Bullet") || other.gameObject.CompareTag("Enemy")) && !disableMove)
         {
-            gameManager.EndGame();
-            Destroy(other.gameObject);
+            if (poweredUp)
+            {
+                EndPowerUp();
+            }
+            else
+            {
+                Die();
+            }
         }
         if (other.gameObject.CompareTag("Power-Up"))
         {
@@ -155,16 +162,27 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator PowerUp()
     {
+        poweredUp = true;
         powerUpParticles.Play();
         spriteRenderer.color = powerUpColor;
         fireDelay *= powerUpFireDelay;
         fireAnimationTime *= powerUpFireDelay;
         speed *= powerUpSpeed;
         yield return new WaitForSeconds(powerUpTimer);
-        spriteRenderer.color = Color.white;
-        fireDelay /= powerUpFireDelay;
-        fireAnimationTime /= powerUpFireDelay;
-        speed /= powerUpSpeed;
+        EndPowerUp();
+    }
+
+    private void EndPowerUp()
+    {
+        if (poweredUp == true)
+        {
+            poweredUp = false;
+            powerUpParticles.Stop();
+            spriteRenderer.color = Color.white;
+            fireDelay /= powerUpFireDelay;
+            fireAnimationTime /= powerUpFireDelay;
+            speed /= powerUpSpeed;
+        }
     }
 
     private void OnRoll(InputAction.CallbackContext context)
@@ -201,7 +219,7 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator Firing()
     {
         Vector2 lookRelative = look.position - transform.position;
-        GameObject swing = (GameObject)PrefabUtility.InstantiatePrefab(projectile);
+        GameObject swing = Instantiate(projectile);
         Transform swingTrans = swing.transform;
         bat.enabled = false;
 
@@ -235,5 +253,11 @@ public class PlayerMovement : MonoBehaviour
         bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, 0));
         bat.gameObject.transform.localPosition = initialBatLocation;
         bat.gameObject.transform.SetPositionAndRotation(bat.gameObject.transform.position, Quaternion.Euler(0, 0, initialBatRotation * batTransform.localScale.x));
+    }
+
+    public void Die()
+    {
+        GetComponent<BoxCollider2D>().enabled = false;
+        gameManager.EndGame();
     }
 }

@@ -19,6 +19,9 @@ public class EnemyController : MonoBehaviour
     public float deviationMoving = 10;
     public float deviationStill = 4;
 
+    public GameObject powerUp;
+    public float dropChance = 10;
+
     public float xSpawnDistance;
     public float ySpawnDistance;
 
@@ -30,10 +33,12 @@ public class EnemyController : MonoBehaviour
     public BoxCollider2D boxCollider;
     public Transform player;
     public EnemyWhacked enemyWhacked;
-    public Object projectile;
+    public GameObject projectile;
 
     private Vector2 whackedDirection;
     private float spawnTimer;
+    private bool LookRight;
+    private bool LookLeft;
     public enum StateEnum {Moving, Retreating, Still, Spawning}
     private StateEnum state;
 
@@ -49,7 +54,7 @@ public class EnemyController : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "ReflectBullet":
-                if(other.gameObject.name == "EnemyMelee")
+                if(other.gameObject.name == "EnemyMelee(Clone)")
                 {
                 }
                 else
@@ -57,7 +62,12 @@ public class EnemyController : MonoBehaviour
                     Destroy(other.gameObject);
                 }
                 Destroy(gameObject); break;
-            case "Swing": 
+            case "Swing":
+                if (Random.Range(0, 100) < dropChance)
+                {
+                    GameObject pu = Instantiate(powerUp, transform.position, Quaternion.identity, transform.parent);
+                    pu.transform.localScale = new Vector3(1/transform.parent.localScale.x, 1/transform.parent.localScale.y, 1);
+                }
                 gameObject.tag = "ReflectBullet"; 
                 enemyWhacked.enabled = true;
                 whackedDirection = other.transform.position - player.position;
@@ -67,7 +77,27 @@ public class EnemyController : MonoBehaviour
                 this.enabled = false; break;
         }
     }
-    
+
+    private void Update()
+    {
+        if (player.position.x > transform.position.x + 0.2 && !LookRight)
+        {
+            sprite.flipX = false;
+            gunSprite.transform.parent.transform.localScale = Vector3.one;
+            gunSprite.sortingOrder = 2;
+            LookRight = true;
+            LookLeft = false;
+        }
+        if (player.position.x < transform.position.x - 0.2 && !LookLeft)
+        {
+            sprite.flipX = true;
+            gunSprite.transform.parent.transform.localScale = new Vector3(-1f, 1f, 1f);
+            gunSprite.sortingOrder = 0;
+            LookLeft = true;
+            LookRight = false;
+        }
+    }
+
     private void FixedUpdate()
     {
         playerDistance = Vector2.Distance(transform.position, player.position);
@@ -86,7 +116,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void MovingBehaviour()
+    public void MovingBehaviour()
     {
         Vector2 move = player.position - transform.position;
         move.Normalize();
@@ -100,7 +130,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void RetreatingBehaviour()
+    public void RetreatingBehaviour()
     {
         if(transform.position.x >= xSpawnDistance || transform.position.y >= ySpawnDistance || transform.position.x <= -xSpawnDistance || transform.position.y <= -ySpawnDistance)
         {
@@ -120,7 +150,7 @@ public class EnemyController : MonoBehaviour
         }
         
     }
-    void StillBehaviour()
+    public void StillBehaviour()
     {
 
         if(playerDistance > maxDistance)
@@ -134,7 +164,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void SpawningBehaviour()
+    public void SpawningBehaviour()
     {
         spawnColor.a += 0.05f;
         sprite.color = spawnColor;
@@ -151,11 +181,11 @@ public class EnemyController : MonoBehaviour
 
     }
 
-    void Fire()
+    public void Fire()
     {
         fireTimer = fireDelay;
         Vector2 lookRelative = player.position - transform.position;
-        GameObject bullet = (GameObject)PrefabUtility.InstantiatePrefab(projectile);
+        GameObject bullet = Instantiate(projectile);
         BulletController bulletController = bullet.GetComponent<BulletController>();
 
         bulletController.bulletDirection = lookRelative.normalized;
@@ -164,4 +194,5 @@ public class EnemyController : MonoBehaviour
         bullet.transform.position = lookRelative.normalized * fireDistance + new Vector2(transform.position.x, transform.position.y);
         bullet.transform.parent = transform.parent;
     }
+
 }

@@ -31,7 +31,7 @@ public class FloorManager : MonoBehaviour
     public float floorDelay = 2f;
     public float[] currentFloorStats;
 
-    public void Start()
+    public void Awake()
     {
             floorStats.Add(floor0);
             floorStats.Add(floor1);
@@ -63,7 +63,7 @@ public class FloorManager : MonoBehaviour
         playerMovement.xFallDistance = currentFloorStats[6] + 0.65f;
         playerMovement.yFallDistance = currentFloorStats[7] + 0.75f;
     }
-    // Update is called once per frame
+    
     public void BeamDestroyed()
     {
         beamsRemaining--;
@@ -86,6 +86,7 @@ public class FloorManager : MonoBehaviour
             playerMovement.disableMove = true;
             yield return new WaitForSeconds(0.5f);
             transform.Translate(new Vector2(0, floorSpacing));
+            playerMovement.transform.position = Vector3.zero;
             currentFloorStats = (float[])floorStats[currentFloor];
             enemySpawner.spawnTimer = floorDelay;
             enemySpawner.currentFloor = floors[currentFloor];

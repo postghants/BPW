@@ -189,6 +189,10 @@ MonoBehaviour:
   kbDistProjectile: 3
   xSpawnDistance: 0
   ySpawnDistance: 0
+  sprite: {fileID: 458592280135497015}
+  shadow: {fileID: 5262025021692200169}
+  spawnColor: {r: 1, g: 1, b: 1, a: 0.27058825}
+  boxCollider: {fileID: 458592280135497012}
 --- !u!50 &458592280135497013
 Rigidbody2D:
   serializedVersion: 4
@@ -217,7 +221,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 458592280135497009}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1

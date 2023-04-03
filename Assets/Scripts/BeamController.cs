@@ -21,7 +21,7 @@ public class BeamController : MonoBehaviour
     {
         initialPosition = transform.localPosition;
         floorManager = GameObject.FindGameObjectWithTag("FloorManager").GetComponent<FloorManager>();
-        health = (int)floorManager.currentFloorStats[11];
+        health = 2;
     }
 
     private void FixedUpdate()

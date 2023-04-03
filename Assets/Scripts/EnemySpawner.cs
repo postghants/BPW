@@ -6,9 +6,9 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public Transform player;
-    public Object enemy1;
-    public Object enemy2;
-    public Object enemy3;
+    public GameObject enemy1;
+    public GameObject enemy2;
+    public GameObject enemy3;
     public Transform currentFloor;
     public float[] currentFloorStats;
 
@@ -27,10 +27,10 @@ public class EnemySpawner : MonoBehaviour
     public float spawnTimer = 1;
     private Vector2 spawnPosition;
     private Vector2 spawnDeviation;
-    private Object chosenEnemy;
+    private GameObject chosenEnemy;
     void Awake()
     {
-        player = GameObject.FindWithTag("Player").transform;
+        player = GameObject.FindWithTag("Player").transform;   
     }
 
     // Update is called once per frame
@@ -70,7 +70,7 @@ public class EnemySpawner : MonoBehaviour
                 chosenEnemy = enemy3;
             }
 
-            GameObject currentEnemy = (GameObject)PrefabUtility.InstantiatePrefab(chosenEnemy);
+            GameObject currentEnemy = Instantiate(chosenEnemy);
             if(chosenEnemy == enemy1 || chosenEnemy == enemy2)
             {
                 EnemyController enemyController = currentEnemy.GetComponent<EnemyController>();
