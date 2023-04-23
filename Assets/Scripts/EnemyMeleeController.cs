@@ -54,7 +54,13 @@ public class EnemyMeleeController : MonoBehaviour
                 OnKnockback(); break;
         }
     }
-    
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            transform.Translate((other.transform.position - transform.position).normalized * -0.05f);
+        }
+    }
     private void FixedUpdate()
     {
         switch (state)
@@ -123,6 +129,7 @@ public class EnemyMeleeController : MonoBehaviour
     {
         kbStart = new Vector2(transform.position.x, transform.position.y);
         state = StateEnum.Knockback;
+        StopCoroutine(Knockback());
         StartCoroutine(Knockback());
     }
 

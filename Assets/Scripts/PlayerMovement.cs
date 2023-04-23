@@ -155,8 +155,11 @@ public class PlayerMovement : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Power-Up"))
         {
-            StartCoroutine(PowerUp());
-            Destroy(other.gameObject);
+            if (!poweredUp)
+            {
+                StartCoroutine(PowerUp());
+                Destroy(other.gameObject);
+            }
         }
     }
 

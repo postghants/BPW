@@ -78,6 +78,14 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            transform.Translate((other.transform.position - transform.position).normalized * -0.05f);
+        }
+    }
+
     private void Update()
     {
         if (player.position.x > transform.position.x + 0.2 && !LookRight)

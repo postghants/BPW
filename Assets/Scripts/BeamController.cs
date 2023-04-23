@@ -41,7 +41,7 @@ public class BeamController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Swing"))
+        if (other.gameObject.CompareTag("Swing") || (other.gameObject.CompareTag("ReflectBullet") && other.gameObject.name == "EnemyMelee(Clone)"))
         {
             health--;
             shakeTimer = shakeDuration;

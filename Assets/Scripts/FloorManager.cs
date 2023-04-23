@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FloorManager : MonoBehaviour
 {
     public GameManager gameManager;
     public PlayerMovement playerMovement;
     public EnemySpawner enemySpawner;
+    public Text floorUI;
 
     [SerializeField] public Transform[] floors = new Transform[11];
     [SerializeField] public ArrayList floorStats = new ArrayList(11);
@@ -62,6 +64,8 @@ public class FloorManager : MonoBehaviour
 
         playerMovement.xFallDistance = currentFloorStats[6] + 0.65f;
         playerMovement.yFallDistance = currentFloorStats[7] + 0.75f;
+        playerMovement.disableMove = true;
+        StartCoroutine(FirstFloor());
     }
     
     public void BeamDestroyed()
@@ -76,17 +80,16 @@ public class FloorManager : MonoBehaviour
     public IEnumerator FinishFloor()
     {
         currentFloor--;
-        if(currentFloor < 0)
-        {
-            gameManager.EndGame();
-            yield return null;
-        }
-        else
-        {
             playerMovement.disableMove = true;
             yield return new WaitForSeconds(0.5f);
             transform.Translate(new Vector2(0, floorSpacing));
             playerMovement.transform.position = Vector3.zero;
+            floorUI.text = "Floor " + currentFloor;
+        if(currentFloor == 0)
+        {
+            floorUI.text = "Floor " + currentFloor + "GET OUT!!";
+        }
+            floorUI.transform.parent.gameObject.SetActive(true);
             currentFloorStats = (float[])floorStats[currentFloor];
             enemySpawner.spawnTimer = floorDelay;
             enemySpawner.currentFloor = floors[currentFloor];
@@ -110,8 +113,15 @@ public class FloorManager : MonoBehaviour
             enemySpawner.currentFloorStats = currentFloorStats;
 
             yield return new WaitForSeconds(floorDelay - 0.5f);
+            floorUI.transform.parent.gameObject.SetActive(false);
             playerMovement.disableMove = false;
-        }
+    }
+
+    public IEnumerator FirstFloor()
+    {
+        yield return new WaitForSeconds(floorDelay - 0.5f);
+        floorUI.transform.parent.gameObject.SetActive(false);
+        playerMovement.disableMove = false;
     }
 
     
