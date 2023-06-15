@@ -30,14 +30,14 @@ public class EnemySpawner : MonoBehaviour
     private GameObject chosenEnemy;
     void Awake()
     {
-        player = GameObject.FindWithTag("Player").transform;   
+        player = GameObject.FindWithTag("Player").transform;
     }
 
     // Update is called once per frame
     void Update()
     {
         spawnTimer -= Time.deltaTime;
-        if(spawnTimer < 0)
+        if (spawnTimer < 0)
         {
             SpawnEnemies();
             spawnTimer = spawnDelay + Random.Range(-1f, 1f);
@@ -54,24 +54,24 @@ public class EnemySpawner : MonoBehaviour
             case 3: spawnPosition = new Vector2(-xSpawnDistance, 0); break;
             case 4: spawnPosition = new Vector2(0, ySpawnDistance); break;
         }
-        for(int i = 0; i < Random.Range(minBatchSize, maxBatchSize); i++)
+        for (int i = 0; i < Random.Range(minBatchSize, maxBatchSize); i++)
         {
             int random = Random.Range(1, 101);
-            if(random <= enemy1Percent)
+            if (random <= enemy1Percent)
             {
                 chosenEnemy = enemy1;
             }
-            if(random > enemy1Percent && random <= enemy1Percent + enemy2Percent)
+            if (random > enemy1Percent && random <= enemy1Percent + enemy2Percent)
             {
                 chosenEnemy = enemy2;
             }
-            if(random > enemy1Percent + enemy2Percent && random <= enemy1Percent + enemy2Percent + enemy3Percent)
+            if (random > enemy1Percent + enemy2Percent && random <= enemy1Percent + enemy2Percent + enemy3Percent)
             {
                 chosenEnemy = enemy3;
             }
 
             GameObject currentEnemy = Instantiate(chosenEnemy);
-            if(chosenEnemy == enemy1 || chosenEnemy == enemy2)
+            if (chosenEnemy == enemy1 || chosenEnemy == enemy2)
             {
                 EnemyController enemyController = currentEnemy.GetComponent<EnemyController>();
                 enemyController.player = player;
@@ -86,14 +86,14 @@ public class EnemySpawner : MonoBehaviour
                 enemyMeleeController.xSpawnDistance = xSpawnDistance;
                 enemyMeleeController.ySpawnDistance = ySpawnDistance;
             }
-            
+
             Transform enemyTransform = currentEnemy.GetComponent<Transform>();
             enemyTransform.Translate(spawnPosition);
-            if(spawnPosition.y != 0)
+            if (spawnPosition.y != 0)
             {
                 spawnDeviation = new Vector2(Random.Range(-xSpawnDeviation, xSpawnDeviation), 0);
             }
-            if(spawnPosition.x != 0)
+            if (spawnPosition.x != 0)
             {
                 spawnDeviation = new Vector2(0, Random.Range(-ySpawnDeviation, ySpawnDeviation));
 

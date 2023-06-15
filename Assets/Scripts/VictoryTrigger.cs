@@ -5,9 +5,10 @@ using UnityEngine;
 public class VictoryTrigger : MonoBehaviour
 {
     public GameManager gameManager;
-    private void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Player"))
+        Debug.Log("Finish");
+        if (other.CompareTag("Player"))
             gameManager.FinishGame();
     }
 }

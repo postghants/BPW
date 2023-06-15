@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +10,7 @@ public class FloorManager : MonoBehaviour
     public PlayerMovement playerMovement;
     public EnemySpawner enemySpawner;
     public Text floorUI;
+    public CamShake camShake;
 
     [SerializeField] public Transform[] floors = new Transform[11];
     [SerializeField] public ArrayList floorStats = new ArrayList(11);
@@ -35,17 +36,17 @@ public class FloorManager : MonoBehaviour
 
     public void Awake()
     {
-            floorStats.Add(floor0);
-            floorStats.Add(floor1);
-            floorStats.Add(floor2);
-            floorStats.Add(floor3);
-            floorStats.Add(floor4);
-            floorStats.Add(floor5);
-            floorStats.Add(floor6);
-            floorStats.Add(floor7);
-            floorStats.Add(floor8);
-            floorStats.Add(floor9);
-            floorStats.Add(floor10);
+        floorStats.Add(floor0);
+        floorStats.Add(floor1);
+        floorStats.Add(floor2);
+        floorStats.Add(floor3);
+        floorStats.Add(floor4);
+        floorStats.Add(floor5);
+        floorStats.Add(floor6);
+        floorStats.Add(floor7);
+        floorStats.Add(floor8);
+        floorStats.Add(floor9);
+        floorStats.Add(floor10);
 
         currentFloor = topFloor;
         currentFloorStats = (float[])floorStats[topFloor];
@@ -67,11 +68,11 @@ public class FloorManager : MonoBehaviour
         playerMovement.disableMove = true;
         StartCoroutine(FirstFloor());
     }
-    
+
     public void BeamDestroyed()
     {
         beamsRemaining--;
-        if(beamsRemaining <= 0)
+        if (beamsRemaining <= 0)
         {
             StartCoroutine(FinishFloor());
         }
@@ -80,41 +81,47 @@ public class FloorManager : MonoBehaviour
     public IEnumerator FinishFloor()
     {
         currentFloor--;
-            playerMovement.disableMove = true;
-            yield return new WaitForSeconds(0.5f);
-            transform.Translate(new Vector2(0, floorSpacing));
-            playerMovement.transform.position = Vector3.zero;
-            floorUI.text = "Floor " + currentFloor;
-        if(currentFloor == 0)
+        playerMovement.disableMove = true;
+        camShake.ShakeScreen(0.7f);
+        yield return new WaitForSeconds(0.5f);
+        transform.Translate(new Vector2(0, floorSpacing));
+        playerMovement.transform.position = Vector3.zero;
+        floorUI.text = "Floor " + currentFloor;
+        if (currentFloor == 0)
         {
-            floorUI.text = "Floor " + currentFloor + "GET OUT!!";
+            camShake.FinalShake();
+            floorUI.text = "Floor " + currentFloor + "\nGET OUT!!\n\n↓↓   ↓↓";
+
         }
-            floorUI.transform.parent.gameObject.SetActive(true);
-            currentFloorStats = (float[])floorStats[currentFloor];
-            enemySpawner.spawnTimer = floorDelay;
-            enemySpawner.currentFloor = floors[currentFloor];
-            enemySpawner.spawnDelay = currentFloorStats[0];
-            enemySpawner.minBatchSize = (int)currentFloorStats[1];
-            enemySpawner.maxBatchSize = (int)currentFloorStats[2];
-            enemySpawner.enemy1Percent = (int)currentFloorStats[3];
-            enemySpawner.enemy2Percent = (int)currentFloorStats[4];
-            enemySpawner.enemy3Percent = (int)currentFloorStats[5];
-            enemySpawner.xSpawnDistance = currentFloorStats[6];
-            enemySpawner.ySpawnDistance = currentFloorStats[7];
-            enemySpawner.xSpawnDeviation = currentFloorStats[8];
-            enemySpawner.ySpawnDeviation = currentFloorStats[9];
+        floorUI.transform.parent.gameObject.SetActive(true);
+        currentFloorStats = (float[])floorStats[currentFloor];
+        enemySpawner.spawnTimer = floorDelay;
+        enemySpawner.currentFloor = floors[currentFloor];
+        enemySpawner.spawnDelay = currentFloorStats[0];
+        enemySpawner.minBatchSize = (int)currentFloorStats[1];
+        enemySpawner.maxBatchSize = (int)currentFloorStats[2];
+        enemySpawner.enemy1Percent = (int)currentFloorStats[3];
+        enemySpawner.enemy2Percent = (int)currentFloorStats[4];
+        enemySpawner.enemy3Percent = (int)currentFloorStats[5];
+        enemySpawner.xSpawnDistance = currentFloorStats[6];
+        enemySpawner.ySpawnDistance = currentFloorStats[7];
+        enemySpawner.xSpawnDeviation = currentFloorStats[8];
+        enemySpawner.ySpawnDeviation = currentFloorStats[9];
 
-            playerMovement.xFallDistance = currentFloorStats[6] + 0.65f;
-            playerMovement.yFallDistance = currentFloorStats[7] + 0.75f;
+        playerMovement.xFallDistance = currentFloorStats[6] + 0.65f;
+        playerMovement.yFallDistance = currentFloorStats[7] + 0.75f;
 
-            floors[currentFloor + 1].gameObject.SetActive(false);
+        floors[currentFloor + 1].gameObject.SetActive(false);
 
-            beamsRemaining = (int)currentFloorStats[10];
-            enemySpawner.currentFloorStats = currentFloorStats;
+        beamsRemaining = (int)currentFloorStats[10];
+        enemySpawner.currentFloorStats = currentFloorStats;
 
-            yield return new WaitForSeconds(floorDelay - 0.5f);
+        yield return new WaitForSeconds(floorDelay - 0.5f);
+        if (currentFloor != 0)
+        {
             floorUI.transform.parent.gameObject.SetActive(false);
-            playerMovement.disableMove = false;
+        }
+        playerMovement.disableMove = false;
     }
 
     public IEnumerator FirstFloor()
@@ -124,5 +131,5 @@ public class FloorManager : MonoBehaviour
         playerMovement.disableMove = false;
     }
 
-    
+
 }

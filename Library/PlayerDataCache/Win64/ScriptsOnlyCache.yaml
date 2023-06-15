@@ -3,6 +3,7 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - BeamController
     - BulletController
+    - CamShake
     - EnemyController
     - EnemyMeleeController
     - EnemySpawner
@@ -18,8 +19,11 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
+    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridPaintingState
+    - UnityEditor.Tilemaps.GridPaletteBrushes
+    - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
@@ -117,6 +121,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 6456}
     - Class: 114
       Script: {instanceID: 6794}
+    - Class: 114
+      Script: {instanceID: 39566}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -662,7 +668,7 @@ ScriptsOnlyBuild:
     className: Cinemachine3rdPersonFollow
   - hash:
       serializedVersion: 2
-      Hash: c2f1fbd32faca8abd281e7b71781377f
+      Hash: 78858aa46f311dda971c8546d52c99ea
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: FloorManager
@@ -1196,7 +1202,7 @@ ScriptsOnlyBuild:
     className: TMP_ScrollbarEventHandler
   - hash:
       serializedVersion: 2
-      Hash: 62e040979f1bcc5cfdb183bf34b809bf
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: UIActions
@@ -1314,6 +1320,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
+  - hash:
+      serializedVersion: 2
+      Hash: 15b0cbd3c220604f9d5aa97d205f879e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CamShake
   platform: 19
   scenePathNames:
   - Assets/Scenes/StartMenu.unity

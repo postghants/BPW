@@ -5,6 +5,8 @@ using UnityEngine;
 public class BeamController : MonoBehaviour
 {
     public int health;
+    private float invulTimer;
+
     public float shakeDuration = 1;
     public float shakeMagnitude = 0.5f;
     public float shakeTimer = 0;
@@ -30,20 +32,33 @@ public class BeamController : MonoBehaviour
         {
             transform.localPosition = initialPosition + Random.insideUnitCircle * currentShakeMagnitude;
             shakeTimer -= Time.deltaTime;
-            currentShakeMagnitude -= shakeMagnitude / (shakeDuration/Time.deltaTime);
+            currentShakeMagnitude -= shakeMagnitude / (shakeDuration / Time.deltaTime);
         }
         else
         {
             shakeTimer = 0;
             transform.localPosition = initialPosition;
         }
+
+        if(invulTimer > 0)
+        {
+            invulTimer -= Time.deltaTime;
+            if(invulTimer <= 0)
+            {
+                invulTimer = 0;
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (invulTimer != 0)
+            return;
+
         if (other.gameObject.CompareTag("Swing") || (other.gameObject.CompareTag("ReflectBullet") && other.gameObject.name == "EnemyMelee(Clone)"))
         {
             health--;
+            invulTimer = 0.1f;
             shakeTimer = shakeDuration;
             currentShakeMagnitude = shakeMagnitude;
             if (health <= 0)

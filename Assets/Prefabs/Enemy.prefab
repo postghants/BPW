@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
-  stunnedTime: 0.2
+  stunnedTime: 0.05
   shakeMagnitude: 0.005
   stunnedColor: {r: 1, g: 0.32051128, b: 0, a: 1}
   whackedColor: {r: 0.69411767, g: 0.21960784, b: 0.22745098, a: 1}

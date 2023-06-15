@@ -25,12 +25,12 @@ public class BulletController : MonoBehaviour
 
     private void Update()
     {
-        if(gameObject.CompareTag("ReflectBullet") && !reflectDone)
+        if (gameObject.CompareTag("ReflectBullet") && !reflectDone)
         {
             StartCoroutine(Reflect());
         }
 
-        if(transform.position.x > xExit || transform.position.y > yExit || transform.position.x < -xExit || transform.position.y < -yExit)
+        if (transform.position.x > xExit || transform.position.y > yExit || transform.position.x < -xExit || transform.position.y < -yExit)
         {
             Destroy(gameObject);
         }

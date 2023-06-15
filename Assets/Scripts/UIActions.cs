@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class UIActions : MonoBehaviour
 {
-    public GameManager gameManager;
     public void Retry()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -20,5 +19,5 @@ public class UIActions : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
-    
+
 }

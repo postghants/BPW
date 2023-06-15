@@ -39,7 +39,7 @@ public class EnemyController : MonoBehaviour
     private float spawnTimer;
     private bool LookRight;
     private bool LookLeft;
-    public enum StateEnum {Moving, Retreating, Still, Spawning}
+    public enum StateEnum { Moving, Retreating, Still, Spawning }
     private StateEnum state;
 
     private void Start()
@@ -54,21 +54,19 @@ public class EnemyController : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "ReflectBullet":
-                if(other.gameObject.name == "EnemyMelee(Clone)")
-                {
-                }
-                else
+                if (other.gameObject.name != "EnemyMelee(Clone)")
                 {
                     Destroy(other.gameObject);
                 }
-                Destroy(gameObject); break;
+                Destroy(gameObject);
+                break;
             case "Swing":
                 if (Random.Range(0, 100) < dropChance)
                 {
                     GameObject pu = Instantiate(powerUp, transform.position, Quaternion.identity, transform.parent);
-                    pu.transform.localScale = new Vector3(1/transform.parent.localScale.x, 1/transform.parent.localScale.y, 1);
+                    pu.transform.localScale = new Vector3(1 / transform.parent.localScale.x, 1 / transform.parent.localScale.y, 1);
                 }
-                gameObject.tag = "ReflectBullet"; 
+                gameObject.tag = "ReflectBullet";
                 enemyWhacked.enabled = true;
                 whackedDirection = other.transform.position - player.position;
                 enemyWhacked.direction = whackedDirection;
@@ -110,12 +108,12 @@ public class EnemyController : MonoBehaviour
     {
         playerDistance = Vector2.Distance(transform.position, player.position);
         fireTimer -= Time.deltaTime;
-        if(fireTimer <= 0)
+        if (fireTimer <= 0)
         {
             Fire();
         }
 
-        switch(state)
+        switch (state)
         {
             case StateEnum.Moving: MovingBehaviour(); break;
             case StateEnum.Retreating: RetreatingBehaviour(); break;
@@ -132,7 +130,7 @@ public class EnemyController : MonoBehaviour
         move *= Time.deltaTime;
         transform.Translate(move);
 
-        if(playerDistance <= stillDistance)
+        if (playerDistance <= stillDistance)
         {
             state = StateEnum.Still;
         }
@@ -140,33 +138,33 @@ public class EnemyController : MonoBehaviour
 
     public void RetreatingBehaviour()
     {
-        if(transform.position.x >= xSpawnDistance || transform.position.y >= ySpawnDistance || transform.position.x <= -xSpawnDistance || transform.position.y <= -ySpawnDistance)
+        if (transform.position.x >= xSpawnDistance || transform.position.y >= ySpawnDistance || transform.position.x <= -xSpawnDistance || transform.position.y <= -ySpawnDistance)
         {
             state = StateEnum.Still;
             return;
         }
-        
+
         Vector2 move = transform.position - player.position;
         move.Normalize();
         move *= speed;
         move *= Time.deltaTime;
         transform.Translate(move);
 
-        if(playerDistance >= stillDistance)
+        if (playerDistance >= stillDistance)
         {
             state = StateEnum.Still;
         }
-        
+
     }
     public void StillBehaviour()
     {
 
-        if(playerDistance > maxDistance)
+        if (playerDistance > maxDistance)
         {
             state = StateEnum.Moving;
         }
-        
-        if(playerDistance < minDistance)
+
+        if (playerDistance < minDistance)
         {
             state = StateEnum.Retreating;
         }

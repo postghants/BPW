@@ -35,15 +35,15 @@ public class PointerController : MonoBehaviour
         look = Look.ReadValue<Vector2>() * sens;
         transform.Translate(look);
 
-        if(transform.position.y > camera.orthographicSize)
+        if (transform.position.y > camera.orthographicSize)
         {
             transform.SetPositionAndRotation(new Vector3(transform.position.x, camera.orthographicSize, transform.position.z), transform.rotation);
         }
-        if(transform.position.y < -camera.orthographicSize)
+        if (transform.position.y < -camera.orthographicSize)
         {
             transform.SetPositionAndRotation(new Vector3(transform.position.x, -camera.orthographicSize, transform.position.z), transform.rotation);
         }
-        if(transform.position.x > camera.orthographicSize * camera.aspect)
+        if (transform.position.x > camera.orthographicSize * camera.aspect)
         {
             transform.SetPositionAndRotation(new Vector3(camera.orthographicSize * camera.aspect, transform.position.y, transform.position.z), transform.rotation);
         }

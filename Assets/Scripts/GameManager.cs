@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public void BeamDestroyed()
     {
 
-    }    
+    }
 
     public void EndGame()
     {

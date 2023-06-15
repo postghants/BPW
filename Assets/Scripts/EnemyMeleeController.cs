@@ -16,6 +16,7 @@ public class EnemyMeleeController : MonoBehaviour
     public float kbDelay = 10;
     public float kbDistSwing = 6;
     public float kbDistProjectile = 3;
+    private Coroutine kbCoroutine;
 
     public float xSpawnDistance;
     public float ySpawnDistance;
@@ -47,7 +48,7 @@ public class EnemyMeleeController : MonoBehaviour
             case "ReflectBullet":
                 gameObject.tag = "ReflectBullet";
                 kbGoal = transform.position + (transform.position - other.transform.position).normalized * kbDistProjectile;
-                OnKnockback();  break;
+                OnKnockback(); break;
             case "Swing":
                 gameObject.tag = "ReflectBullet";
                 kbGoal = transform.position + (other.transform.position - player.position).normalized * kbDistSwing;
@@ -56,7 +57,7 @@ public class EnemyMeleeController : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy") && state == StateEnum.Moving)
         {
             transform.Translate((other.transform.position - transform.position).normalized * -0.05f);
         }
@@ -87,7 +88,7 @@ public class EnemyMeleeController : MonoBehaviour
             LookRight = false;
         }
     }
-    void SpawningBehaviour()
+    private void SpawningBehaviour()
     {
         spawnColor.a += 0.05f;
         sprite.color = spawnColor;
@@ -115,7 +116,7 @@ public class EnemyMeleeController : MonoBehaviour
         move *= Time.deltaTime;
         transform.Translate(move);
 
-        
+
     }
 
     private void KnockbackBehaviour()
@@ -129,8 +130,11 @@ public class EnemyMeleeController : MonoBehaviour
     {
         kbStart = new Vector2(transform.position.x, transform.position.y);
         state = StateEnum.Knockback;
-        StopCoroutine(Knockback());
-        StartCoroutine(Knockback());
+        if (kbCoroutine != null)
+        {
+            StopCoroutine(kbCoroutine);
+        }
+        kbCoroutine = StartCoroutine(Knockback());
     }
 
     private IEnumerator Knockback()

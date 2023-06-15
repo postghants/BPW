@@ -27,20 +27,20 @@ public class EnemyWhacked : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-            if (shakeTimer > 0)
-            {
-                transform.localPosition = initialPosition + Random.insideUnitCircle * currentShakeMagnitude;
-                shakeTimer -= Time.deltaTime;
-                currentShakeMagnitude -= shakeMagnitude / (stunnedTime / Time.deltaTime);
-            }
-            else
-            {
-                move = direction * speed;
-                move *= Time.deltaTime;
-                transform.Translate(move);
-            }
+        if (shakeTimer > 0)
+        {
+            transform.localPosition = initialPosition + Random.insideUnitCircle * currentShakeMagnitude;
+            shakeTimer -= Time.deltaTime;
+            currentShakeMagnitude -= shakeMagnitude / (stunnedTime / Time.deltaTime);
+        }
+        else
+        {
+            move = direction * speed;
+            move *= Time.deltaTime;
+            transform.Translate(move);
+        }
     }
-    
+
     private IEnumerator Stunned()
     {
         spriteRenderer.color = stunnedColor;

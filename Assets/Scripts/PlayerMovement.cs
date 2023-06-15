@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.XR.Haptics;
 
 public class PlayerMovement : MonoBehaviour
 {
-    
+
     public float speed = 5;
     public float rollDist = 20;
     public float rollDelay = 10;
@@ -61,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
     private bool LookLeft = false;
     private bool LookRight = true;
 
-    
+
 
     private void Awake()
     {
@@ -113,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
         }
-        
+
         if (look.position.x > transform.position.x + 0.2 && !LookRight)
         {
             spriteRenderer.flipX = false;
@@ -130,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
             LookLeft = true;
             LookRight = false;
         }
-        
+
 
         if (isRolling)
         {
@@ -190,7 +190,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnRoll(InputAction.CallbackContext context)
     {
-        if (!isRolling && move != Vector2.zero)
+        if (!isRolling && !disableMove && move != Vector2.zero)
         {
             isRolling = true;
             disableMove = true;
@@ -228,7 +228,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         swingTrans.position = lookRelative.normalized * fireDistance + new Vector2(transform.position.x, transform.position.y);
-        if(swingTrans.position.y < transform.position.y)
+        if (swingTrans.position.y < transform.position.y)
         {
             fireRotation = -Vector2.Angle(new Vector2(1, 0), lookRelative);
         }
